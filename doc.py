@@ -151,26 +151,6 @@ def train(net, train_features, train_labels, test_features, test_labels,
             test_ls.append(log_rmse(net, test_features, test_labels))
     return train_ls, test_ls
 
-# Training the NN using the Adam optimization agorithm
-def train(net, train_features, train_labels, test_features, test_labels,
-          num_epochs, learning_rate, weight_decay, batch_size):
-    train_ls, test_ls = [], []
-    train_iter = d2l.load_array((train_features, train_labels), batch_size)
-    # The Adam optimization algorithm is used here
-    trainer = gluon.Trainer(net.collect_params(), 'adam', {
-        'learning_rate': learning_rate,
-        'wd': weight_decay})
-    for epoch in range(num_epochs):
-        for X, y in train_iter:
-            with autograd.record():
-                l = loss(net(X), y)
-            l.backward()
-            trainer.step(batch_size)
-        train_ls.append(log_rmse(net, train_features, train_labels))
-        if test_labels is not None:
-            test_ls.append(log_rmse(net, test_features, test_labels))
-    return train_ls, test_ls
-
 ### K-fold cross variation
 def get_k_fold_data(k, i, X, y):
     assert k > 1
@@ -234,7 +214,6 @@ def train_and_pred(train_features, test_feature, train_labels, test_data,
 
 train_and_pred(train_features, test_features, train_labels, test_data,
                num_epochs, lr, weight_decay, batch_size)
-# trt t
 
 # optimizer= adam, net= linear: avg valid log rmse: 0.170324
 
